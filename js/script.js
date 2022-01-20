@@ -238,16 +238,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
             statusMessage.textContent = message.loading;
             form.insertAdjacentElement('afterend', statusMessage);
+           
+            const formData = new FormData(form);
+            const object = {};
+            formData.forEach(function(value, key){
+                object[key]=value;
+            });
+            const json = JSON.stringify(object);
+
 
             
-            const formData = new FormData(form);
+            
             fetch('server.php', {
                 method: "POST",
-                // headers: {
-                //     'Content-type':'application/json'
-                // },
-                body: formData
+                headers: {
+                    'Content-type':'application/json'
+                },
+                body: JSON.stringify(object)
             })
+            .then(data => data.text())
             .then(data => {
                 console.log(data);
                 showThanksModal(message.succes);
@@ -284,7 +293,10 @@ document.addEventListener("DOMContentLoaded", () => {
             prevModalDialog.classList.remove('hide');
             modalClose();
 
-        },4000);
+        },4000); 
 
     }
+    fetch('db.json')
+    .then(data=>data.json())
+    .then(res => console.log(res));
 });
